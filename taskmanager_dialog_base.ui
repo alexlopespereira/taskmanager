@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>470</height>
+    <width>539</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>10</y>
      <width>521</width>
      <height>451</height>
@@ -60,13 +60,13 @@
            <height>351</height>
           </rect>
          </property>
-         <widget class="QListView" name="listView">
+         <widget class="QTableView" name="tableView">
           <property name="geometry">
            <rect>
-            <x>0</x>
+            <x>10</x>
             <y>0</y>
-            <width>517</width>
-            <height>353</height>
+            <width>519</width>
+            <height>351</height>
            </rect>
           </property>
          </widget>
@@ -91,6 +91,8 @@
     </item>
    </layout>
   </widget>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>label_3</zorder>
  </widget>
  <resources/>
  <connections/>

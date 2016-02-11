@@ -33,7 +33,7 @@ import qgis
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-
+from qgis.gui import QgsAttributeTableModel
 
 class taskmanager:
     """QGIS Plugin Implementation."""
@@ -186,16 +186,20 @@ class taskmanager:
         # remove the toolbar
         del self.toolbar
 
-
-
     def dbInsertData(self):
-        idlist = []
-        for row in range(model.rowCount()):
-            item = model.item(row)
+        index = modelt.index(0,0)
+        columnindex=0
+        for i in range(0,modelt.columnCount(index)):
+            qresult = modelt.headerData(i, Qt.Horizontal, 0)
+            if keycolumn == qresult:
+                columnindex=i
 
-            if item.checkState() == Qt.Checked:
-                id=dict[item.text()]
-                idlist.append(id)
+        idlist = []
+        curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
+        for row in range(modelt.rowCount()):
+            index = modelt.index(row,columnindex)
+            id = modelt.data(index,columnindex)
+            idlist.append(id)
 
         for id in idlist:
             # create an item with a caption
@@ -210,6 +214,8 @@ class taskmanager:
             else:
                 print "not inserted: ", id, ". error: ", queryinsert.lastError().text()
 
+        actlayer = qgis.utils.iface.activeLayer()
+        actlayer.setSubsetString("")
         self.dlg.accept()
 
     def cancelAction(self):
@@ -229,6 +235,8 @@ class taskmanager:
             db.setPort(int(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).port()))
             ok = db.open()
             if ok:
+                global keycolumn
+                keycolumn = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).keyColumn()
                 query = db.exec_("""select * from prodser.user""")
                 # iterate over the rows
                 while query.next():
@@ -240,46 +248,35 @@ class taskmanager:
         label = "Feicoes selecionadas em " + actlayer.name() + ":"
         self.dlg.label_2.setText(label)
 
-        # Our main window will be a QListView
-        self.dlg.listView.setWindowTitle('Example List')
-        self.dlg.listView.setMinimumSize(600, 400)
-
-        # Create an empty model for the list's data
-        global model
-        model = QStandardItemModel(self.dlg.listView)
-
         # Add some textual items
         features = actlayer.selectedFeatures()
-        flist = []
+        fidlist = []
 
-        global dict
-        dict = {'key':'value'}
         for f in features:
-            fn = f['filename']
-            dict[fn]=f['gid']
-            flist.append(f['filename'])
+            fidlist.append(f[keycolumn])
 
-        for ft in flist:
-            # create an item with a caption
-            item = QStandardItem(ft)
-            # add a checkbox to it
-            item.setCheckable(True)
-            item.setCheckState(Qt.Checked)
+        selection=[]
+        strsel=keycolumn + " IN ("
 
-            # Add the item to the model
-            model.appendRow(item)
+        for fid in fidlist:
+            selection.append(fid)
+            strsel=strsel+ "'" + str(fid) + "',"
 
-        # Apply the model to the list view
-        self.dlg.listView.setModel(model)
+        strsel=strsel[:-1] + ")"
+        actlayer.setSubsetString(strsel)
 
-        # Show the window and run the app
-        self.dlg.listView.show()
+        global modelt
+        cache = QgsVectorLayerCache(actlayer, 50000)
+        modelt = QgsAttributeTableModel(cache)
+        modelt.loadLayer()
+        table = self.dlg.tableView
+        table.setModel(modelt)
 
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        global curruid
-        curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
+        # global curruid
+        # curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
         self.dlg.exec_()
 
 

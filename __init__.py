@@ -23,6 +23,7 @@
 """
 
 
+
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load taskmanager class from file taskmanager.
@@ -33,3 +34,4 @@ def classFactory(iface):  # pylint: disable=invalid-name
     #
     from .taskmanager import taskmanager
     return taskmanager(iface)
+

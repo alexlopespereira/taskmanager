@@ -10,14 +10,15 @@
 name=Task Manager
 qgisMinimumVersion=2.0
 description=Atribui uma feição a um usuário
-version=0.1
+version=0.3
 author=Alex Lopes Pereira
 email=alex.pereira@sipam.gov.br
 
-about=Atribui uma feição a um usuário.
+about=Assign a feature to a given user. It depends on a PostgreSQL dabase that contains the user names.
 
-tracker=/home/alex/Desktop/repository/desenvolvimento/amazoniasar/qgis/taskmanager
-repository=/home/alex/Desktop/repository/desenvolvimento/amazoniasar/qgis/taskmanager
+tracker=https://github.com/alexlopespereira/taskmanager/issues
+repository=https://github.com/alexlopespereira/taskmanager
+
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,7 +29,7 @@ repository=/home/alex/Desktop/repository/desenvolvimento/amazoniasar/qgis/taskma
 # Tags are comma separated with spaces allowed
 tags=
 
-homepage=
+homepage=https://github.com/alexlopespereira/taskmanager
 category=Vector
 icon=icon.png
 # experimental flag
