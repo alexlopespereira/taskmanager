@@ -187,13 +187,14 @@ class taskmanager:
         del self.toolbar
 
     def dbInsertData(self):
+        actlayer = qgis.utils.iface.activeLayer()
         index = modelt.index(0,0)
         columnindex=0
         for i in range(0,modelt.columnCount(index)):
             qresult = modelt.headerData(i, Qt.Horizontal, 0)
             if keycolumn == qresult:
                 columnindex=i
-
+        print "columnindex: ",columnindex,"row count: ", modelt.rowCount()
         idlist = []
         curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
         for row in range(modelt.rowCount()):
@@ -201,11 +202,23 @@ class taskmanager:
             id = modelt.data(index,columnindex)
             idlist.append(id)
 
+        querystr = "SELECT pg_catalog.obj_description(c.oid) AS table_comment FROM pg_class c WHERE c.relname = '" + actlayer.name() + "' limit 1"
+        query = db.exec_(querystr)
+        query.next()
+        record = query.record()
+        tablename = record.value(0)
+
+        querystr2 = "SELECT d.nspname AS schema_name FROM pg_class c LEFT JOIN pg_namespace d ON d.oid = c.relnamespace WHERE c.relname = '" + tablename + "'"
+        query = db.exec_(querystr2)
+        query.next()
+        record = query.record()
+        schemaname = record.value(0)
+        fullname = schemaname + "." + tablename
         for id in idlist:
             # create an item with a caption
             queryinsert = QSqlQuery()
-            queryinsert.prepare("INSERT INTO prodser.user_index_defor (ref_index, ref_user) "
-                                "VALUES (:ref_index, :ref_user)")
+            querystr3 = "INSERT INTO " + fullname + " (ref_index, ref_user) VALUES (:ref_index, :ref_user)"
+            queryinsert.prepare(querystr3)
             queryinsert.bindValue(":ref_user", curruid)
             queryinsert.bindValue(":ref_index", id)
             testquery = queryinsert.exec_()
@@ -214,7 +227,6 @@ class taskmanager:
             else:
                 print "not inserted: ", id, ". error: ", queryinsert.lastError().text()
 
-        actlayer = qgis.utils.iface.activeLayer()
         actlayer.setSubsetString("")
         self.dlg.accept()
 
@@ -225,7 +237,7 @@ class taskmanager:
         """Run method that performs all the real work"""
         self.dlg.comboBox.clear()
         actlayer = qgis.utils.iface.activeLayer()
-
+        global db
         db = QSqlDatabase.addDatabase("QPSQL")
         if db.isValid():
             db.setHostName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).host())

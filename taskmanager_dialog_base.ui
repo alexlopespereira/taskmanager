@@ -63,9 +63,9 @@
          <widget class="QTableView" name="tableView">
           <property name="geometry">
            <rect>
-            <x>10</x>
+            <x>0</x>
             <y>0</y>
-            <width>519</width>
+            <width>511</width>
             <height>351</height>
            </rect>
           </property>
@@ -91,8 +91,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>label_3</zorder>
  </widget>
  <resources/>
  <connections/>
