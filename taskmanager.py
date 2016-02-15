@@ -186,6 +186,7 @@ class taskmanager:
         # remove the toolbar
         del self.toolbar
 
+
     def dbInsertData(self):
         actlayer = qgis.utils.iface.activeLayer()
         index = modelt.index(0,0)
@@ -194,7 +195,7 @@ class taskmanager:
             qresult = modelt.headerData(i, Qt.Horizontal, 0)
             if keycolumn == qresult:
                 columnindex=i
-        print "columnindex: ",columnindex,"row count: ", modelt.rowCount()
+        #print "columnindex: ",columnindex,"row count: ", modelt.rowCount()
         idlist = []
         curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
         for row in range(modelt.rowCount()):
