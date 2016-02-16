@@ -282,13 +282,16 @@ class taskmanager:
         global db
         db = QSqlDatabase.addDatabase("QPSQL")
         if db.isValid():
-            print actlayer.dataProvider().dataSourceUri()
-            db.setHostName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).host())
-            db.setDatabaseName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).database())
-            db.setUserName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).username())
-            db.setPassword(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).password())
-            db.setPort(int(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).port()))
-            self.keycolumn = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).keyColumn()
+            dsu = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() )
+            #realm = "database="+dsu.database()+" username="+dsu.username()+" host="+dsu.host()
+            realmsc = actlayer.dataProvider().dataSourceUri()
+            print realmsc
+            db.setHostName(dsu.host())
+            db.setDatabaseName(dsu.database())
+            db.setUserName(dsu.username())
+            db.setPassword(dsu.password())
+            db.setPort(int(dsu.port()))
+            self.keycolumn = dsu.keyColumn()
             ok = db.open()
             if ok:
                 query = db.exec_("""select * from prodser.user""")
@@ -301,7 +304,7 @@ class taskmanager:
                 self.populateTable()
             else:
                 print db.lastError().text()
-                self.dbdialog.setRealm(actlayer.dataProvider().dataSourceUri())
+                self.dbdialog.setRealm(realmsc)
                 self.dbdialog.setUsername(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri()).username())
                 if self.dbdialog.exec_() == QDialog.Accepted:
                     db.setUserName(self.dbdialog.getUsername())
