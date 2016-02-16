@@ -61,5 +61,4 @@ class dbconnectionDialog(QtGui.QDialog, FORM_CLASS):
         self.textName=name
 
     def setRealm(self, realm):
-        print "this realm:", realm
         self.label_4.setText(realm)

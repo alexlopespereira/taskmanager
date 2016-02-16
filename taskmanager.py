@@ -283,9 +283,7 @@ class taskmanager:
         db = QSqlDatabase.addDatabase("QPSQL")
         if db.isValid():
             dsu = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() )
-            #realm = "database="+dsu.database()+" username="+dsu.username()+" host="+dsu.host()
             realmsc = actlayer.dataProvider().dataSourceUri()
-            print realmsc
             db.setHostName(dsu.host())
             db.setDatabaseName(dsu.database())
             db.setUserName(dsu.username())

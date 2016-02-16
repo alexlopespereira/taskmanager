@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2f596775-b619-4802-b4c8-e0da05fead00" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db_connection.ui" afterPath="$PROJECT_DIR$/db_connection.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbconnection_dialog.py" afterPath="$PROJECT_DIR$/dbconnection_dialog.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taskmanager.py" afterPath="$PROJECT_DIR$/taskmanager.py" />
     </list>
     <ignored path="taskmanager.iws" />
@@ -28,7 +28,7 @@
         <entry file="file://$PROJECT_DIR$/taskmanager.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.33870968">
-              <caret line="286" column="61" selection-start-line="286" selection-start-column="61" selection-end-line="286" selection-end-column="61" />
+              <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -38,7 +38,7 @@
         <entry file="file://$PROJECT_DIR$/dbconnection_dialog.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="34" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
+              <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding>
                 <element signature="e#1158#1167#0" expanded="true" />
               </folding>
@@ -367,7 +367,7 @@
     <entry file="file://$PROJECT_DIR$/dbconnection_dialog.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="34" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
           <folding>
             <element signature="e#1158#1167#0" expanded="true" />
           </folding>
@@ -377,7 +377,7 @@
     <entry file="file://$PROJECT_DIR$/taskmanager.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33870968">
-          <caret line="286" column="61" selection-start-line="286" selection-start-column="61" selection-end-line="286" selection-end-column="61" />
+          <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
           <folding />
         </state>
       </provider>
