@@ -26,6 +26,7 @@ from PyQt4.QtGui import QAction, QIcon
 import resources
 # Import the code for the dialog
 from taskmanager_dialog import taskmanagerDialog
+from dbconnection_dialog import dbconnectionDialog
 import os.path
 from PyQt4.QtSql import *
 from PyQt4.QtSql import QSqlQuery
@@ -34,6 +35,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import QgsAttributeTableModel
+import PyQt4.QtGui
 
 class taskmanager:
     """QGIS Plugin Implementation."""
@@ -76,6 +78,10 @@ class taskmanager:
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.dbInsertData)
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.cancelAction)
+        self.dbdialog = dbconnectionDialog()
+        # self.dbdialog.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        # self.dbdialog.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.getCredentials)
+        # self.dbdialog.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.cancelAction)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -167,8 +173,6 @@ class taskmanager:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-
         icon_path = ':/plugins/taskmanager/icon.png'
         self.add_action(
             icon_path,
@@ -189,18 +193,18 @@ class taskmanager:
 
     def dbInsertData(self):
         actlayer = qgis.utils.iface.activeLayer()
-        index = modelt.index(0,0)
+        index = self.modelt.index(0,0)
         columnindex=0
-        for i in range(0,modelt.columnCount(index)):
-            qresult = modelt.headerData(i, Qt.Horizontal, 0)
-            if keycolumn == qresult:
+        for i in range(0,self.modelt.columnCount(index)):
+            qresult = self.modelt.headerData(i, Qt.Horizontal, 0)
+            if self.keycolumn == qresult:
                 columnindex=i
         #print "columnindex: ",columnindex,"row count: ", modelt.rowCount()
         idlist = []
         curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
-        for row in range(modelt.rowCount()):
-            index = modelt.index(row,columnindex)
-            id = modelt.data(index,columnindex)
+        for row in range(self.modelt.rowCount()):
+            index = self.modelt.index(row,columnindex)
+            id = self.modelt.data(index,columnindex)
             idlist.append(id)
 
         querystr = "SELECT pg_catalog.obj_description(c.oid) AS table_comment FROM pg_class c WHERE c.relname = '" + actlayer.name() + "' limit 1"
@@ -234,30 +238,11 @@ class taskmanager:
     def cancelAction(self):
         self.dlg.reject()
 
-    def run(self):
-        """Run method that performs all the real work"""
-        self.dlg.comboBox.clear()
-        actlayer = qgis.utils.iface.activeLayer()
-        global db
-        db = QSqlDatabase.addDatabase("QPSQL")
-        if db.isValid():
-            db.setHostName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).host())
-            db.setDatabaseName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).database())
-            db.setUserName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).username())
-            db.setPassword(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).password())
-            db.setPort(int(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).port()))
-            ok = db.open()
-            if ok:
-                global keycolumn
-                keycolumn = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).keyColumn()
-                query = db.exec_("""select * from prodser.user""")
-                # iterate over the rows
-                while query.next():
-                    record = query.record()
-                    name = record.value(1)
-                    uid = record.value(0)
-                    self.dlg.comboBox.addItem(name, uid)
+    # def getCredentials(self):
 
+
+    def populateTable(self):
+        actlayer = qgis.utils.iface.activeLayer()
         label = "Feicoes selecionadas em " + actlayer.name() + ":"
         self.dlg.label_2.setText(label)
 
@@ -266,10 +251,10 @@ class taskmanager:
         fidlist = []
 
         for f in features:
-            fidlist.append(f[keycolumn])
+            fidlist.append(f[self.keycolumn])
 
         selection=[]
-        strsel=keycolumn + " IN ("
+        strsel=self.keycolumn + " IN ("
 
         for fid in fidlist:
             selection.append(fid)
@@ -278,19 +263,65 @@ class taskmanager:
         strsel=strsel[:-1] + ")"
         actlayer.setSubsetString(strsel)
 
-        global modelt
         cache = QgsVectorLayerCache(actlayer, 50000)
-        modelt = QgsAttributeTableModel(cache)
-        modelt.loadLayer()
+        self.modelt = QgsAttributeTableModel(cache)
+        self.modelt.loadLayer()
         table = self.dlg.tableView
-        table.setModel(modelt)
-
-        # show the dialog
+        table.setModel(self.modelt)
+         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         # global curruid
         # curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
         self.dlg.exec_()
+
+    def run(self):
+        """Run method that performs all the real work"""
+        self.dlg.comboBox.clear()
+        actlayer = qgis.utils.iface.activeLayer()
+        global db
+        db = QSqlDatabase.addDatabase("QPSQL")
+        if db.isValid():
+            print actlayer.dataProvider().dataSourceUri()
+            db.setHostName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).host())
+            db.setDatabaseName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).database())
+            db.setUserName(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).username())
+            db.setPassword(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).password())
+            db.setPort(int(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).port()))
+            self.keycolumn = QgsDataSourceURI( actlayer.dataProvider().dataSourceUri() ).keyColumn()
+            ok = db.open()
+            if ok:
+                query = db.exec_("""select * from prodser.user""")
+                # iterate over the rows
+                while query.next():
+                    record = query.record()
+                    name = record.value(1)
+                    uid = record.value(0)
+                    self.dlg.comboBox.addItem(name, uid)
+                self.populateTable()
+            else:
+                print db.lastError().text()
+                self.dbdialog.setRealm(actlayer.dataProvider().dataSourceUri())
+                self.dbdialog.setUsername(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri()).username())
+                if self.dbdialog.exec_() == QDialog.Accepted:
+                    db.setUserName(self.dbdialog.getUsername())
+                    db.setPassword(self.dbdialog.getPassword())
+                    ok = db.open()
+                    if ok:
+                        query = db.exec_("""select * from prodser.user""")
+                        # iterate over the rows
+                        while query.next():
+                            record = query.record()
+                            name = record.value(1)
+                            uid = record.value(0)
+                            self.dlg.comboBox.addItem(name, uid)
+                        self.populateTable()
+                    else:
+                        print db.lastError().text()
+
+
+
+
 
 
 
