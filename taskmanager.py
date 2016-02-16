@@ -301,7 +301,6 @@ class taskmanager:
                     self.dlg.comboBox.addItem(name, uid)
                 self.populateTable()
             else:
-                print db.lastError().text()
                 self.dbdialog.setRealm(realmsc)
                 self.dbdialog.setUsername(QgsDataSourceURI( actlayer.dataProvider().dataSourceUri()).username())
                 if self.dbdialog.exec_() == QDialog.Accepted:

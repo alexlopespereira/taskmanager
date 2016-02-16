@@ -43,6 +43,7 @@ class dbconnectionDialog(QtGui.QDialog, FORM_CLASS):
         self.setupUi(self)
         self.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.handleLogin)
 
+
     def handleLogin(self):
         self.textName = self.lineEdit.text()
         self.textPass = self.lineEdit_2.text()
@@ -59,6 +60,7 @@ class dbconnectionDialog(QtGui.QDialog, FORM_CLASS):
 
     def setUsername(self, name):
         self.textName=name
+        self.lineEdit.setText(name)
 
     def setRealm(self, realm):
         self.label_4.setText(realm)

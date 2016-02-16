@@ -24,21 +24,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="taskmanager.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="taskmanager.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/taskmanager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33870968">
-              <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="303" column="0" selection-start-line="303" selection-start-column="0" selection-end-line="303" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dbconnection_dialog.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dbconnection_dialog.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dbconnection_dialog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.88709676">
+              <caret line="62" column="34" selection-start-line="62" selection-start-column="34" selection-end-line="62" selection-end-column="34" />
               <folding>
                 <element signature="e#1158#1167#0" expanded="true" />
               </folding>
@@ -65,8 +65,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/metadata.txt" />
-        <option value="$PROJECT_DIR$/dbconnection_dialog.py" />
         <option value="$PROJECT_DIR$/taskmanager.py" />
+        <option value="$PROJECT_DIR$/dbconnection_dialog.py" />
       </list>
     </option>
   </component>
@@ -364,21 +364,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dbconnection_dialog.py">
+    <entry file="file://$PROJECT_DIR$/taskmanager.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-          <folding>
-            <element signature="e#1158#1167#0" expanded="true" />
-          </folding>
+          <caret line="303" column="0" selection-start-line="303" selection-start-column="0" selection-end-line="303" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/taskmanager.py">
+    <entry file="file://$PROJECT_DIR$/dbconnection_dialog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33870968">
-          <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.88709676">
+          <caret line="62" column="34" selection-start-line="62" selection-start-column="34" selection-end-line="62" selection-end-column="34" />
+          <folding>
+            <element signature="e#1158#1167#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
