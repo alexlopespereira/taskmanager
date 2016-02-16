@@ -10,7 +10,7 @@
 name=Task Manager
 qgisMinimumVersion=2.0
 description=Atribui uma feição a um usuário
-version=0.6
+version=0.7
 author=Alex Lopes Pereira
 email=alex.pereira@sipam.gov.br
 
