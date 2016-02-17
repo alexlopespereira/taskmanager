@@ -226,11 +226,12 @@ class taskmanager:
             queryinsert.prepare(querystr3)
             queryinsert.bindValue(":ref_user", curruid)
             queryinsert.bindValue(":ref_index", id)
+            print "id="+id+", curruid="+curruid+", fullname="+fullname
             testquery = queryinsert.exec_()
             if testquery:
                 print "inserted: ", id
             else:
-                print "not inserted: ", id, ". error: ", queryinsert.lastError().text()
+                print "not inserted: "+ id
 
         actlayer.setSubsetString("")
         self.dlg.accept()
