@@ -75,9 +75,14 @@ class taskmanager:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'taskmanager')
         self.toolbar.setObjectName(u'taskmanager')
+
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.dbInsertData)
-        self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.cancelAction)
+        self.dlg.buttonBox.button(QDialogButtonBox.Ignore).clicked.connect(self.cancelAction)
+        self.dlg.buttonBox.button(QDialogButtonBox.Close).clicked.connect(self.removeRelationship)
+        self.dlg.buttonBox.button(QDialogButtonBox.Ok).setText("Vincular")
+        self.dlg.buttonBox.button(QDialogButtonBox.Close).setText("Desvincular")
+        self.dlg.buttonBox.button(QDialogButtonBox.Ignore).setText("Cancelar")
         self.dbdialog = dbconnectionDialog()
         # self.dbdialog.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         # self.dbdialog.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.getCredentials)
@@ -190,6 +195,40 @@ class taskmanager:
         # remove the toolbar
         del self.toolbar
 
+    def removeRelationship(self):
+        actlayer = qgis.utils.iface.activeLayer()
+        index = self.modelt.index(0,0)
+        columnindex=0
+        for i in range(0,self.modelt.columnCount(index)):
+            qresult = self.modelt.headerData(i, Qt.Horizontal, 0)
+            if self.keycolumn == qresult:
+                columnindex=i
+                break
+        idlist = []
+
+        for row in range(self.modelt.rowCount()):
+            index = self.modelt.index(row,columnindex)
+            id = self.modelt.data(index,columnindex)
+            idlist.append(id)
+
+        queryinsert = QSqlQuery()
+        querystr3 = "SELECT " + self.schema + ".del_row(:schema, :ref_id);" # "DELETE FROM " + self.schema+ " prodser.user_cim WHERE " self.keycolumn + " IN (" + stringlist + ");"
+
+        for id in idlist:
+            # create an item with a caption
+            #print "id="+str(id)+", curruid="+str(curruid)+", fullname="+fullname
+            queryinsert.prepare(querystr3)
+            queryinsert.bindValue(":schema", self.schema)
+            queryinsert.bindValue(":ref_id", id)
+            testquery = queryinsert.exec_()
+            if testquery:
+                print "deleted: ", id
+            else:
+                print "not deleted: " + id + queryinsert.lastError().text()
+                print querystr3
+
+        actlayer.setSubsetString("")
+        self.dlg.accept()
 
     def dbInsertData(self):
         actlayer = qgis.utils.iface.activeLayer()
@@ -202,16 +241,23 @@ class taskmanager:
                 break
         idlist = []
         curruid = self.dlg.comboBox.itemData(self.dlg.comboBox.currentIndex())
+        if curruid=="0":
+            msgBox = PyQt4.QtGui.QMessageBox(QMessageBox.Warning, u"Atenção", u"Selecione um usuário")
+            msgBox.setText("Selecione um usuario")
+            msgBox.setStandardButtons(QMessageBox.Ok);
+            msgBox.exec_()
+            return
+
         for row in range(self.modelt.rowCount()):
             index = self.modelt.index(row,columnindex)
             id = self.modelt.data(index,columnindex)
             idlist.append(id)
 
+        queryinsert = QSqlQuery()
+        querystr3 = "SELECT "+self.schema+ ".insert_or_update(:ref_index, :ref_user);"
         for id in idlist:
-            # create an item with a caption
+            #create an item with a caption
             #print "id="+str(id)+", curruid="+str(curruid)+", fullname="+fullname
-            queryinsert = QSqlQuery()
-            querystr3 = "SELECT "+self.schema+ ".insert_or_update(:ref_index, :ref_user);"
             queryinsert.prepare(querystr3)
             queryinsert.bindValue(":ref_user", curruid)
             queryinsert.bindValue(":ref_index", id)
@@ -280,7 +326,8 @@ class taskmanager:
             self.keycolumn = dsu.keyColumn()
             ok = self.db.open()
             if ok:
-                query = self.db.exec_("select * from " + self.schema + ".user")
+                query = self.db.exec_("select * from " + self.schema + ".user order by responsavel asc")
+                self.dlg.comboBox.addItem("", "0")
                 # iterate over the rows
                 while query.next():
                     record = query.record()
@@ -296,8 +343,9 @@ class taskmanager:
                     self.db.setPassword(self.dbdialog.getPassword())
                     ok = self.db.open()
                     if ok:
-                        query = self.db.exec_("select * from " + self.schema + ".user")
+                        query = self.db.exec_("select * from " + self.schema + ".user order by responsavel asc")
                         # iterate over the rows
+                        self.dlg.comboBox.addItem("", "0")
                         while query.next():
                             record = query.record()
                             name = record.value(1)
